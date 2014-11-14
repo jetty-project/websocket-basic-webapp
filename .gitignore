@@ -2,6 +2,7 @@
 .project
 .settings
 target/
+webapps/*.war
 *.swp
 *.log
 *~
