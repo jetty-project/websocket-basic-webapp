@@ -2,29 +2,16 @@ package com.example;
 
 import java.io.IOException;
 
-import javax.websocket.OnMessage;
-import javax.websocket.Session;
-import javax.websocket.server.ServerEndpoint;
+import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
+import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
-@ServerEndpoint("/echo")
+@WebSocket
 public class EchoEndPoint
 {
-    @OnMessage
-    public void onMessage(Session session, String message)
+    @OnWebSocketMessage
+    public void onMessage(Session session, String message) throws IOException
     {
-        try
-        {
-            for (Session sess : session.getOpenSessions())
-            {
-                if (sess.isOpen())
-                {
-                    sess.getBasicRemote().sendText(message);
-                }
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        session.getRemote().sendString(message);
     }
 }

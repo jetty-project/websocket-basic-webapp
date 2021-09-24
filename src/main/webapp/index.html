@@ -1,0 +1,191 @@
+<html>
+<head>
+    <title>WebSocket Tester</title>
+    <script type='text/javascript'>
+
+        if (!window.WebSocket && window.MozWebSocket)
+            window.WebSocket = window.MozWebSocket;
+        if (!window.WebSocket)
+            alert("WebSocket not supported by this browser");
+
+        function $() {
+            return document.getElementById(arguments[0]);
+        }
+
+        function $F() {
+            return document.getElementById(arguments[0]).value;
+        }
+
+        function getKeyCode(ev) {
+            if (window.event) return window.event.keyCode;
+            return ev.keyCode;
+        }
+
+        var room = {
+            setName: function (name) {
+                this.name = name;
+            },
+
+            join: function (location) {
+                this._ws = new WebSocket(location);
+                this._ws.room = this;
+                this._ws.onopen = this._onopen;
+                this._ws.onmessage = this._onmessage;
+                this._ws.onclose = this._onclose;
+            },
+
+            _onopen: function () {
+                $('connect').className = 'hidden';
+                $('connected').className = '';
+                $('phrase').focus();
+                this.send(this.room.name + ' has joined the chat');
+            },
+
+            _send: function (message) {
+                if (this._ws && message)
+                    this._ws.send(this.name + ': ' + message);
+            },
+
+            _close: function (message) {
+                if (this._ws) {
+                    this._ws.send(this.name + ' has left the chat');
+                    this._ws.close(1000, message);
+                }
+            },
+
+            display: function (text) {
+                if (text == null)
+                    text = '';
+                else
+                    text = text
+                        .replace('<', '&lt;')
+                        .replace('>', '&gt;')
+                        .replace('&', '&amp;')
+                        .replace('\"', '&quot')
+                        .replace('\'', '&#x27;')
+                        .replace(/(?:\r\n|\r|\n)/g, '<br>');
+
+                var chat = $('chat');
+                var spanText = document.createElement('span');
+                spanText.className = 'text';
+                spanText.innerHTML = text;
+                chat.appendChild(spanText);
+                chat.appendChild(document.createElement('br'));
+                chat.scrollTop = chat.scrollHeight - chat.clientHeight;
+            },
+
+            _onmessage: function (m) {
+                if (m.data) {
+                    room.display(m.data);
+                }
+            },
+
+            _onclose: function (m) {
+                this._ws = null;
+                $("chat").innerHTML = "";
+                $('connect').className = '';
+                $('connected').className = 'hidden';
+            }
+
+        };
+    </script>
+
+    <style type='text/css'>
+        div {
+            border: 0px solid black;
+        }
+
+        div#chat {
+            clear: both;
+            width: 40em;
+            height: 50ex;
+            overflow: auto;
+            background-color: #f0f0f0;
+            padding: 4px;
+            border: 1px solid black;
+        }
+
+        div#input {
+            clear: both;
+            width: 40em;
+            padding: 4px;
+            background-color: #e0e0e0;
+            border: 1px solid black;
+            border-top: 0px
+        }
+
+        input#phrase {
+            width: 30em;
+            background-color: #e0f0f0;
+        }
+
+        input#location {
+            width: 14em;
+            background-color: #e0f0f0;
+        }
+
+        div.hidden {
+            display: none;
+        }
+
+        span.from {
+            font-weight: bold;
+        }
+
+        span.alert {
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+<div id='chat'></div>
+<div id='input'>
+    <div id='connect'>
+        URI:
+        <input id='location' type='text' style="width: 400px;" value="ws://localhost:8080/wsecho"/>
+        <input id='connectB' class='button' type='submit' name='connect' value='Join'/>
+    </div>
+    <div id='connected' class='hidden'>
+        Message:
+        <input id='phrase' type='text'/>
+        <input id='sendB' class='button' type='submit' name='join' value='Send'/>
+        <input id='closeB' class='button' type='submit' name='close' value='Close'/>
+    </div>
+</div>
+
+<script type='text/javascript'>
+    $('location').setAttribute('autocomplete', 'OFF');
+    $('connectB').onclick = function (event) {
+        var location = $('location').value;
+        room.setName(name);
+        room.join(location);
+        return false;
+    };
+
+    const phrase = $('phrase');
+    phrase.setAttribute('autocomplete', 'OFF');
+    phrase.onkeyup = function (ev) {
+        var keyc = getKeyCode(ev);
+        if (keyc === 13 || keyc === 10) {
+            room._send($F('phrase'));
+            $('phrase').value = '';
+            return false;
+        }
+        return true;
+    };
+
+    $('sendB').onclick = function (event) {
+        room._send($F('phrase'));
+        $('phrase').value = '';
+        return false;
+    };
+
+    $('closeB').onclick = function (event) {
+        room._close($F('phrase'));
+        $('phrase').value = '';
+        return false;
+    };
+
+</script>
+</body>
+</html>

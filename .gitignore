@@ -1,8 +1,10 @@
 .classpath
 .project
 .settings
+.idea
 target/
 webapps/*.war
 *.swp
 *.log
 *~
+*.iml

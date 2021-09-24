@@ -3,4 +3,13 @@
   xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
   version="3.1">
   <display-name>WebSocket Demo App</display-name>
+
+  <servlet>
+    <servlet-name>WebSocketUpgradeServlet</servlet-name>
+    <servlet-class>com.example.WebSocketUpgradeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>WebSocketUpgradeServlet</servlet-name>
+    <url-pattern>/wsecho</url-pattern>
+  </servlet-mapping>
 </web-app>
