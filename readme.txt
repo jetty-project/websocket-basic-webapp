@@ -1,5 +1,5 @@
 
-Example of using WebSocket on Jetty.
+Example of using WebSocket on Jetty with the Jetty WebSocket API.
 
 This project uses maven.
 This checkout is a valid ${jetty.base} directory too.
@@ -12,17 +12,11 @@ To build:
 
 To run in jetty distribution:
 
-  $ java -jar /path/to/jetty-distribution-9.2.5.v20141112/start.jar
+  $ java -jar /path/to/jetty-home-9.4.x/start.jar
 
 To test:
 
-  1) Open http://www.websocket.org/echo.html in your websocket capable web browser
-  2) Find out your machine's IP address (localhost will not work due to browser restrictions)
-  3) Pop in your URL into web forms "Location:" field.
-
-     Example: ws://192.168.1.139:8080/wsecho/echo
-
-  4) Click "Connect" button
-  5) Start sending messages
-
+  1) Open http://www.localhost:8080 in your websocket capable web browser
+  2) Click "Join" button
+  3) Start sending messages
 
