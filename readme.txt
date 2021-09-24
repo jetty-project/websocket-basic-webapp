@@ -8,7 +8,7 @@ To build:
 
   $ mvn clean install
 
-  This should have created a webapps/wsecho.war file for you
+  This should have created a webapps/root.war file for you
 
 To run in jetty distribution:
 
